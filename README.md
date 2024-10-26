@@ -1,2 +1,3 @@
 # Full Stack Open
-Repositorio tehtäville
+
+repository for exercises
