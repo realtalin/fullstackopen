@@ -2,6 +2,16 @@ import { useState } from 'react'
 
 const Button = ({onClick, label}) => <button onClick={onClick}>{label}</button>
 
+const AnecdoteView = ({title, anecdote, points}) => {
+  return(
+    <div>
+      <h1>{title}</h1>
+      <p>{anecdote}</p>
+      <p>{'has '} {points} {'votes'}</p>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -22,13 +32,15 @@ const App = () => {
     copy[selected] += 1
     setPoints(copy)
   }
+
+  const indexOfAnecdoteWithTheMostVotes = points.indexOf(Math.max(...points))
   
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>{'has '} {points[selected]} {'votes'}</p>
+      <AnecdoteView title={'Anecdote of the day'} anecdote={anecdotes[selected]} points={points[selected]} />
       <Button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} label='next anecdote' />
       <Button onClick={handlePoints} label='vote' />
+      <AnecdoteView title={'Anecdote with the most votes'} anecdote={anecdotes[indexOfAnecdoteWithTheMostVotes]} points={points[indexOfAnecdoteWithTheMostVotes]} />
     </div>
   )
 }
