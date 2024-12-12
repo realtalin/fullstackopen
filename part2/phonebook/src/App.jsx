@@ -1,14 +1,50 @@
 import { useState } from 'react'
 
+const Person = ({ person }) => {
+  return <li>{`${person.name} ${person.number}`}</li>
+}
+
+const PersonList = ({ persons, search }) => {
+  const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
+  return (
+    <div>
+      <ul style={{ listStyleType: "none" }}>
+        {filteredPersons.map(person => (
+          <Person key={person.name} person={person} />
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+const PersonForm = ({ newName, newNumber, handleNewName, handleNewNumber, addPerson }) => {
+  return (
+    <form onSubmit={addPerson}>
+      <div>
+        name: <input value={newName} onChange={handleNewName} />
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={handleNewNumber} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const SearchInput = ({ search, handleSearch }) => {
+  return <input value={search} onChange={handleSearch} />
+}
+
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' }
   ])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
-
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -24,48 +60,30 @@ const App = () => {
       return
     }
 
-
     setPersons(persons.concat(newPerson))
     setNewName('')
     setNewNumber('')
   }
 
-
-
-  const Person = ({ person }) => {
-    return <li>{`${person.name} ${person.number}`}</li>
+  const handleNewName = (event) => {
+    setNewName(event.target.value)
   }
 
-  const PersonList = ({ persons, search }) => {
-    const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
-    return (
-      <div>
-        <ul style={{ listStyleType: "none" }}>
-          {filteredPersons.map(person => (
-            <Person key={person.name} person={person} />
-          ))}
-        </ul>
-      </div>
-    )
+  const handleNewNumber = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value)
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
       <h2>Search</h2>
-      <input value={search} onChange={(event) => { setSearch(event.target.value) }} />
+      <SearchInput search={search} handleSearch={handleSearch} />
       <h2>Add new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={(event) => { setNewName(event.target.value) }} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={(event) => { setNewNumber(event.target.value) }} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm newName={newName} newNumber={newNumber} handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
       <h2>Numbers</h2>
       <PersonList persons={persons} search={search} />
     </div >
