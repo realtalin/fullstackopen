@@ -44,15 +44,26 @@ const SearchInput = ({ search, handleSearch }) => {
   return <input value={search} onChange={handleSearch} />
 }
 
-const Notification = ({ text }) => {
-  const style = {
-    color: 'ghostwhite',
-    background: 'yellowgreen',
-    boxShadow: '10px 10px 2px -3px forestgreen',
-    width: '10%',
-    padding: 10,
-    marginBottom: 10
-  }
+const Notification = ({ text, error }) => {
+  const style = error
+    ?
+    {
+      color: 'black',
+      background: 'indianred',
+      boxShadow: '10px 10px 2px -3px grey',
+      width: '10%',
+      padding: 10,
+      marginBottom: 10
+    }
+    :
+    {
+      color: 'ghostwhite',
+      background: 'yellowgreen',
+      boxShadow: '10px 10px 2px -3px forestgreen',
+      width: '10%',
+      padding: 10,
+      marginBottom: 10
+    }
 
   if (!text) {
     return null
@@ -72,6 +83,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
   const [notificationText, setNotificationText] = useState(null)
+  const [notificationError, setNotificationError] = useState(null)
 
   useEffect(() => {
     personService
@@ -97,10 +109,7 @@ const App = () => {
       if (!confirm(`${newPerson.name} is already added to the phonebook, update their number?`))
         return
       updatePerson(existingPerson.id, newPerson)
-      setNotificationText(`Updated ${newPerson.name}`)
-      setTimeout(() => {
-        setNotificationText(null)
-      }, 5000)
+      showNotification(`Updated ${newPerson.name}`, false)
       return
     }
 
@@ -110,10 +119,7 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-        setNotificationText(`Added ${returnedPerson.name}`)
-        setTimeout(() => {
-          setNotificationText(null)
-        }, 5000)
+        showNotification(`Added ${returnedPerson.name}`, false)
       })
   }
 
@@ -124,6 +130,12 @@ const App = () => {
       .update(id, updatedPerson)
       .then(returnedPerson => {
         setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+      })
+      .catch(error => {
+        if (error) {
+          showNotification(`${currentPerson.name} has already been removed from the server`, true)
+          setPersons(persons.filter(person => person.id != currentPerson.id))
+        }
       })
     return
   }
@@ -150,6 +162,15 @@ const App = () => {
     setSearch(event.target.value)
   }
 
+  const showNotification = (text, error) => {
+    setNotificationText(text)
+    setNotificationError(error)
+    setTimeout(() => {
+      setNotificationText(null)
+      setNotificationError(null)
+    }, 5000)
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -159,7 +180,7 @@ const App = () => {
       <PersonForm newName={newName} newNumber={newNumber} handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
       <h2>Numbers</h2>
       <PersonList persons={persons} search={search} deletePerson={deletePerson} />
-      <Notification text={notificationText} />
+      <Notification text={notificationText} error={notificationError} />
     </div >
   )
 }
