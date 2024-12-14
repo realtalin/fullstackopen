@@ -15,6 +15,12 @@ const add = (person) => {
 
 }
 
+const update = (id, newPerson) => {
+  return axios
+    .put(`${baseUrl}/${id}`, newPerson)
+    .then(response => response.data)
+}
+
 const remove = (id) => {
   return axios
     .delete(`${baseUrl}/${id}`)
@@ -24,5 +30,6 @@ const remove = (id) => {
 export default {
   getAll,
   add,
+  update,
   remove,
 };

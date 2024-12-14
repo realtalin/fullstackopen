@@ -68,8 +68,13 @@ const App = () => {
       alert('Please give a name')
       return
     }
-    if (persons.some(person => person.name === newPerson.name)) {
-      alert(`${newPerson.name} is already added to the phonebook`)
+
+    const existingPerson = persons.find(person => person.name === newPerson.name)
+
+    if (existingPerson) {
+      if (!confirm(`${newPerson.name} is already added to the phonebook, update their number?`))
+        return
+      updatePerson(existingPerson.id, newPerson)
       return
     }
 
@@ -80,6 +85,17 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+  }
+
+  const updatePerson = (id, newPerson) => {
+    const currentPerson = persons.find(person => person.id === id)
+    const updatedPerson = { ...currentPerson, name: newPerson.name, number: newPerson.number }
+    personService
+      .update(id, updatedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+      })
+    return
   }
 
   const deletePerson = (person) => {
