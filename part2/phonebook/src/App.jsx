@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import personService from '../src/services/persons.js'
 import axios from 'axios'
 
 const Person = ({ person }) => {
@@ -46,9 +47,11 @@ const App = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response => {
-      setPersons(response.data)
-    }))
+    personService
+      .getAll()
+      .then(allPersons => {
+        setPersons(allPersons)
+      })
   }, [])
 
   const addPerson = (event) => {
@@ -65,9 +68,13 @@ const App = () => {
       return
     }
 
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+    personService
+      .add(newPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleNewName = (event) => {
