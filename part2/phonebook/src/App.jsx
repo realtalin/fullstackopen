@@ -44,12 +44,34 @@ const SearchInput = ({ search, handleSearch }) => {
   return <input value={search} onChange={handleSearch} />
 }
 
+const Notification = ({ text }) => {
+  const style = {
+    color: 'ghostwhite',
+    background: 'yellowgreen',
+    boxShadow: '10px 10px 2px -3px forestgreen',
+    width: '10%',
+    padding: 10,
+    marginBottom: 10
+  }
+
+  if (!text) {
+    return null
+  }
+
+  return (
+    <div style={style}>
+      {text}
+    </div>
+  )
+}
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+  const [notificationText, setNotificationText] = useState(null)
 
   useEffect(() => {
     personService
@@ -75,6 +97,10 @@ const App = () => {
       if (!confirm(`${newPerson.name} is already added to the phonebook, update their number?`))
         return
       updatePerson(existingPerson.id, newPerson)
+      setNotificationText(`Updated ${newPerson.name}`)
+      setTimeout(() => {
+        setNotificationText(null)
+      }, 5000)
       return
     }
 
@@ -84,6 +110,10 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNotificationText(`Added ${returnedPerson.name}`)
+        setTimeout(() => {
+          setNotificationText(null)
+        }, 5000)
       })
   }
 
@@ -129,6 +159,7 @@ const App = () => {
       <PersonForm newName={newName} newNumber={newNumber} handleNewName={handleNewName} handleNewNumber={handleNewNumber} addPerson={addPerson} />
       <h2>Numbers</h2>
       <PersonList persons={persons} search={search} deletePerson={deletePerson} />
+      <Notification text={notificationText} />
     </div >
   )
 }
