@@ -14,7 +14,7 @@ const Search = ({ search, handleSearch }) => {
   )
 }
 
-const CountryList = ({ countries }) => {
+const CountryList = ({ countries, setDisplayedCountry }) => {
   const style = {
     listStyle: 'none',
     paddingLeft: 0,
@@ -30,12 +30,22 @@ const CountryList = ({ countries }) => {
     return (
       <ul style={style}>
         {countries.map((country) => (
-          <li key={country.cca2}>{country.name.common}</li>
+          <li key={country.cca2}>
+            {country.name.common}
+            <button
+              style={{ marginLeft: 5 }}
+              onClick={() => {
+                setDisplayedCountry(country)
+              }}
+            >
+              show
+            </button>
+          </li>
         ))}
       </ul>
     )
   } else if (countries.length === 1) {
-    return <CountryInfo country={countries[0]} />
+    setDisplayedCountry(countries[0])
   } else if (countries.length < 1) {
     return (
       <ul style={style}>
@@ -46,7 +56,9 @@ const CountryList = ({ countries }) => {
 }
 
 const CountryInfo = ({ country }) => {
-  console.log(Object.entries(country.languages))
+  if (!country) {
+    return null
+  }
   return (
     <div>
       <h1 style={{ padding: 10 }}>{country.name.common}</h1>
@@ -72,6 +84,7 @@ const App = () => {
   const [search, setSearch] = useState('')
   const [allCountries, setAllCountries] = useState([])
   const [filteredCountries, setFilteredCountries] = useState([])
+  const [displayedCountry, setDisplayedCountry] = useState(null)
 
   useEffect(() => {
     axios
@@ -82,17 +95,24 @@ const App = () => {
   const handleSearch = (event) => {
     const searchValue = event.target.value
     setSearch(searchValue)
-    setFilteredCountries(
-      allCountries.filter((country) =>
-        country.name.common.toLowerCase().includes(searchValue.toLowerCase())
-      )
+    const filtered = allCountries.filter((country) =>
+      country.name.common.toLowerCase().includes(searchValue.toLowerCase())
     )
+    setFilteredCountries(filtered)
+    if (filtered.length !== 1) {
+      setDisplayedCountry(null)
+    }
   }
 
   return (
     <div>
       <Search search={search} handleSearch={handleSearch} />
-      <CountryList countries={filteredCountries} />
+      <CountryList
+        countries={filteredCountries}
+        displayedCountry={displayedCountry}
+        setDisplayedCountry={setDisplayedCountry}
+      />
+      <CountryInfo country={displayedCountry} />
     </div>
   )
 }
