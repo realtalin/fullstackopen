@@ -157,9 +157,10 @@ const App = () => {
 
   const deletePerson = (person) => {
     if (!confirm(`Delete ${person.name}?`)) return
-    personService.remove(person.id).then((deletedPerson) => {
-      console.log(deletedPerson)
-      setPersons(persons.filter((p) => p.id != deletedPerson.id))
+    personService.remove(person.id).then((response) => {
+      if (response.status === 204) {
+        setPersons(persons.filter((p) => p.id != person.id))
+      }
     })
   }
 
