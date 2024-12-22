@@ -121,12 +121,15 @@ const App = () => {
       return
     }
 
-    personService.add(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson))
-      setNewName('')
-      setNewNumber('')
-      showNotification(`Added ${returnedPerson.name}`, false)
-    })
+    personService
+      .add(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        showNotification(`Added ${returnedPerson.name}`, false)
+      })
+      .catch((error) => showNotification(error.response.data.error, true))
   }
 
   const updatePerson = (id, newPerson) => {
@@ -144,15 +147,8 @@ const App = () => {
         )
       })
       .catch((error) => {
-        if (error) {
-          showNotification(
-            `${currentPerson.name} has already been removed from the server`,
-            true
-          )
-          setPersons(persons.filter((person) => person.id != currentPerson.id))
-        }
+        showNotification(error.response.data.error, true)
       })
-    return
   }
 
   const deletePerson = (person) => {
