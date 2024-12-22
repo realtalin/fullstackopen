@@ -12,7 +12,7 @@ const Person = ({ person, deletePerson }) => {
 
 const PersonList = ({ persons, search, deletePerson }) => {
   const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(search.toLowerCase())
+    person.name.toLowerCase().includes(search.toLowerCase()),
   )
   return (
     <div>
@@ -106,13 +106,13 @@ const App = () => {
     }
 
     const existingPerson = persons.find(
-      (person) => person.name === newPerson.name
+      (person) => person.name === newPerson.name,
     )
 
     if (existingPerson) {
       if (
         !confirm(
-          `${newPerson.name} is already added to the phonebook, update their number?`
+          `${newPerson.name} is already added to the phonebook, update their number?`,
         )
       )
         return
@@ -143,7 +143,7 @@ const App = () => {
       .update(id, updatedPerson)
       .then((returnedPerson) => {
         setPersons(
-          persons.map((person) => (person.id === id ? returnedPerson : person))
+          persons.map((person) => (person.id === id ? returnedPerson : person)),
         )
       })
       .catch((error) => {
