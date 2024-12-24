@@ -5,6 +5,7 @@ import {
   totalLikes,
   favouriteBlog,
   mostBlogs,
+  mostLikes,
 } from '../utils/list_helper.js'
 import { blogs } from './data.js'
 
@@ -51,8 +52,8 @@ describe('favouriteBlog', () => {
     })
   })
 
-  test('of an empty list is null', () => {
-    assert.strictEqual(favouriteBlog([]), null)
+  test('of an empty list is undefined', () => {
+    assert.strictEqual(favouriteBlog([]), undefined)
   })
 })
 
@@ -71,7 +72,27 @@ describe('mostBlogs', () => {
     })
   })
 
-  test('of an empty list is null', () => {
-    assert.strictEqual(mostBlogs([]), null)
+  test('of an empty list is undefined', () => {
+    assert.strictEqual(mostBlogs([]), undefined)
+  })
+})
+
+describe('mostLikes', () => {
+  test('when list has one blog, equals that author', () => {
+    assert.deepStrictEqual(mostLikes(blogs.slice(0, 1)), {
+      author: 'Michael Chan',
+      likes: 7,
+    })
+  })
+
+  test('gets correct author and likes from list of blogs', () => {
+    assert.deepStrictEqual(mostLikes(blogs), {
+      author: 'Edsger W. Dijkstra',
+      likes: 17,
+    })
+  })
+
+  test('of an empty list is undefined', () => {
+    assert.strictEqual(mostLikes([]), undefined)
   })
 })

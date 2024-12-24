@@ -1,4 +1,4 @@
-import { chain as _chain } from 'lodash-es'
+import { chain as _chain, sumBy as _sumBy } from 'lodash-es'
 
 // eslint-disable-next-line no-unused-vars
 const dummy = (blogs) => {
@@ -15,20 +15,35 @@ const favouriteBlog = (blogs) => {
   const result =
     blogs.length > 0
       ? blogs.reduce((max, blog) => (max.likes > blog.likes ? max : blog))
-      : null
+      : undefined
 
   return result
 }
 
 const mostBlogs = (blogs) => {
   const result = _chain(blogs)
-    .map('author')
-    .countBy()
-    .toPairs()
-    .maxBy((pair) => pair[1])
+    .groupBy('author')
+    .map((authorBlogs, author) => ({
+      author,
+      blogs: authorBlogs.length,
+    }))
+    .maxBy('blogs')
     .value()
 
-  return result ? { author: result[0], blogs: result[1] } : null
+  return result
 }
 
-export { dummy, totalLikes, favouriteBlog, mostBlogs }
+const mostLikes = (blogs) => {
+  const result = _chain(blogs)
+    .groupBy('author')
+    .map((authorBlogs, author) => ({
+      author,
+      likes: _sumBy(authorBlogs, 'likes'),
+    }))
+    .maxBy('likes')
+    .value()
+
+  return result
+}
+
+export { dummy, totalLikes, favouriteBlog, mostBlogs, mostLikes }
