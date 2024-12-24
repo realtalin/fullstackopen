@@ -6,7 +6,7 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "awesome blog 2",
+    "title": "awesome blog 3",
     "author": "Jeff Bezos",
     "url": "http://www.myawesomeblog.com",
     "likes": 0

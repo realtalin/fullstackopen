@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import { connect } from 'mongoose'
-import { Blog } from './models/blog.js'
+import { blogsRouter } from './controllers/blogs.js'
 
 const app = express()
 
@@ -20,19 +20,7 @@ app.use(
 app.use(cors())
 app.use(express.json())
 
-app.get('/api/blogs', (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs)
-  })
-})
-
-app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog.save().then((result) => {
-    response.status(201).json(result)
-  })
-})
+app.use('/api/blogs', blogsRouter)
 
 const PORT = 3003
 app.listen(PORT, () => {
