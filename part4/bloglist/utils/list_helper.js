@@ -1,3 +1,5 @@
+import { chain as _chain } from 'lodash-es'
+
 // eslint-disable-next-line no-unused-vars
 const dummy = (blogs) => {
   return 1
@@ -18,4 +20,15 @@ const favouriteBlog = (blogs) => {
   return result
 }
 
-export { dummy, totalLikes, favouriteBlog }
+const mostBlogs = (blogs) => {
+  const result = _chain(blogs)
+    .map('author')
+    .countBy()
+    .toPairs()
+    .maxBy((pair) => pair[1])
+    .value()
+
+  return result ? { author: result[0], blogs: result[1] } : null
+}
+
+export { dummy, totalLikes, favouriteBlog, mostBlogs }

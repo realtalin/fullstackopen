@@ -1,6 +1,11 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert'
-import { dummy, totalLikes, favouriteBlog } from '../utils/list_helper.js'
+import {
+  dummy,
+  totalLikes,
+  favouriteBlog,
+  mostBlogs,
+} from '../utils/list_helper.js'
 import { blogs } from './data.js'
 
 describe('dummy', () => {
@@ -48,5 +53,25 @@ describe('favouriteBlog', () => {
 
   test('of an empty list is null', () => {
     assert.strictEqual(favouriteBlog([]), null)
+  })
+})
+
+describe('mostBlogs', () => {
+  test('when list has one blog, equals that author', () => {
+    assert.deepStrictEqual(mostBlogs(blogs.slice(0, 1)), {
+      author: 'Michael Chan',
+      blogs: 1,
+    })
+  })
+
+  test('gets correct author and count from list of blogs', () => {
+    assert.deepStrictEqual(mostBlogs(blogs), {
+      author: 'Robert C. Martin',
+      blogs: 3,
+    })
+  })
+
+  test('of an empty list is null', () => {
+    assert.strictEqual(mostBlogs([]), null)
   })
 })
