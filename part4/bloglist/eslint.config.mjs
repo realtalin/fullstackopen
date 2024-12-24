@@ -16,6 +16,11 @@ export default [
     },
   },
   {
+    parserOptions: {
+      sourceType: 'module',
+    },
+  },
+  {
     ignores: ['dist/**', 'node_modules/**'],
   },
   {
