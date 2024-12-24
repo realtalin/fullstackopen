@@ -9,4 +9,13 @@ const totalLikes = (blogs) => {
   }, 0)
 }
 
-export { dummy, totalLikes }
+const favouriteBlog = (blogs) => {
+  const result =
+    blogs.length > 0
+      ? blogs.reduce((max, blog) => (max.likes > blog.likes ? max : blog))
+      : null
+
+  return result
+}
+
+export { dummy, totalLikes, favouriteBlog }
