@@ -2,18 +2,10 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
-import { Schema, model, connect } from 'mongoose'
+import { connect } from 'mongoose'
+import { Blog } from './models/blog.js'
 
 const app = express()
-
-const blogSchema = new Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-})
-
-const Blog = model('Blog', blogSchema)
 
 const mongoUrl = process.env.MONGODB_URI
 connect(mongoUrl)
