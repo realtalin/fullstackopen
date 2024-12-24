@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Blog } from '../models/blog.js'
+import Blog from '../models/blog.js'
 
 const blogsRouter = Router()
 
@@ -17,4 +17,4 @@ blogsRouter.post('/', (request, response) => {
   })
 })
 
-export { blogsRouter }
+export default blogsRouter

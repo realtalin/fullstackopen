@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import { connect } from 'mongoose'
-import { blogsRouter } from './controllers/blogs.js'
+import blogsRouter from './controllers/blogs.js'
 import { MONGODB_URI } from './utils/config.js'
 
 const app = express()

@@ -9,4 +9,4 @@ const blogSchema = new Schema({
 
 const Blog = model('Blog', blogSchema)
 
-export { Blog }
+export default Blog
