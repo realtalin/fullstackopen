@@ -37,4 +37,11 @@ const blogs = [
   },
 ]
 
-export { blogs }
+const newBlog = {
+  title: 'bingus-blog',
+  author: 'slonkazoid',
+  url: 'https://blog.slonk.ing/',
+  likes: 1000,
+}
+
+export { blogs, newBlog }

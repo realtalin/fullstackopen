@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../../app.js'
 import Blog from '../../models/blog.js'
-import { blogs } from './data.js'
+import { blogs, newBlog } from './data.js'
 
 const api = supertest(app)
 
@@ -29,7 +29,7 @@ describe('blogs api', () => {
   test('correct amount of blogs is returned', async () => {
     const response = await api.get(url)
 
-    assert.strictEqual(response.body.length, 6)
+    assert.strictEqual(response.body.length, blogs.length)
   })
 
   test('first blog id field is called id', async () => {
@@ -37,6 +37,27 @@ describe('blogs api', () => {
 
     assert(response.body[0].id)
     assert(!response.body[0]._id)
+  })
+
+  test('blog is added to the database correctly', async () => {
+    await api
+      .post(url)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get(url)
+
+    assert.strictEqual(response.body.length, blogs.length + 1)
+    assert(
+      response.body.some(
+        (blog) =>
+          blog.title === newBlog.title &&
+          blog.author === newBlog.author &&
+          blog.url === newBlog.url &&
+          blog.likes === newBlog.likes,
+      ),
+    )
   })
 
   after(async () => {
