@@ -6,11 +6,12 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "awesome blog 4",
+    "title": "awesome blog",
     "author": "Jeff Bezos",
     "url": "http://www.myawesomeblog.com",
-    "likes": 0
+    "likes": 2
 }
 
+###
 
-
+DELETE http://localhost:3003/api/blogs/676ee2da00f299bc9c0fec86

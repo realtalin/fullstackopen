@@ -5,6 +5,7 @@ import supertest from 'supertest'
 import app from '../../app.js'
 import Blog from '../../models/blog.js'
 import { blogs, newBlog } from './data.js'
+import { getAllBlogs, nonexistentId } from './utils.js'
 
 const api = supertest(app)
 
@@ -46,11 +47,11 @@ describe('blogs api', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get(url)
+    const blogsAfter = await getAllBlogs()
 
-    assert.strictEqual(response.body.length, blogs.length + 1)
+    assert.strictEqual(blogsAfter.length, blogs.length + 1)
     assert(
-      response.body.some(
+      blogsAfter.some(
         (blog) =>
           blog.title === newBlog.title &&
           blog.author === newBlog.author &&
@@ -73,10 +74,10 @@ describe('blogs api', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get(url)
+    const blogsAfter = await getAllBlogs()
 
     assert(
-      response.body.some(
+      blogsAfter.some(
         (blog) =>
           blog.title === newBlogNoLikes.title &&
           blog.author === newBlogNoLikes.author &&
@@ -95,9 +96,9 @@ describe('blogs api', () => {
 
     await api.post(url).send(newBlogNoTitle).expect(400)
 
-    const response = await api.get(url)
+    const blogsAfter = await getAllBlogs()
 
-    assert.strictEqual(response.body.length, blogs.length)
+    assert.strictEqual(blogsAfter.length, blogs.length)
   })
 
   test('adding blog with missing url fails', async () => {
@@ -109,9 +110,40 @@ describe('blogs api', () => {
 
     await api.post(url).send(newBlogNoUrl).expect(400)
 
-    const response = await api.get(url)
+    const blogsAfter = await getAllBlogs()
 
-    assert.strictEqual(response.body.length, blogs.length)
+    assert.strictEqual(blogsAfter.length, blogs.length)
+  })
+
+  test('deleting existing blog works', async () => {
+    const blogsBefore = await getAllBlogs()
+    const blogToDelete = blogsBefore[0]
+
+    await api.delete(`${url}/${blogToDelete.id}`).expect(204)
+
+    const blogsAfter = await getAllBlogs()
+
+    assert.strictEqual(blogsAfter.length, blogs.length - 1)
+
+    assert(
+      !blogsAfter.some(
+        (blog) =>
+          blog.title === blogToDelete.title &&
+          blog.author === blogToDelete.author &&
+          blog.url === blogToDelete.url &&
+          blog.likes === blogToDelete.likes,
+      ),
+    )
+  })
+
+  test('deleting nonexistent blog fails with 404', async () => {
+    const idToTryDelete = await nonexistentId()
+
+    await api.delete(`${url}/${idToTryDelete}`).expect(404)
+
+    const blogsAfter = await getAllBlogs()
+
+    assert.strictEqual(blogsAfter.length, blogs.length)
   })
 
   after(async () => {
