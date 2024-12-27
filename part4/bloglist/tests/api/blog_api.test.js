@@ -146,6 +146,38 @@ describe('blogs api', () => {
     assert.strictEqual(blogsAfter.length, blogs.length)
   })
 
+  test('updating blogs likes works', async () => {
+    const blogsBefore = await getAllBlogs()
+    const blogBefore = blogsBefore[0]
+    const updatedBlog = {
+      title: blogBefore.title,
+      author: blogBefore.author,
+      url: blogBefore.url,
+      likes: 500,
+    }
+
+    await api.put(`${url}/${blogBefore.id}`).send(updatedBlog).expect(200)
+
+    const blogAfter = (await Blog.findById(blogBefore.id)).toJSON()
+
+    assert.deepStrictEqual({ ...updatedBlog, id: blogBefore.id }, blogAfter)
+  })
+
+  test('updating nonexistent blog fails with 404', async () => {
+    const idToTryUpdate = await nonexistentId()
+    const updatedBlog = {
+      title: 'this blog does not exist',
+    }
+
+    await api.put(`${url}/${idToTryUpdate}`).send(updatedBlog).expect(404)
+
+    const blogsAfter = await getAllBlogs()
+
+    assert(
+      !blogsAfter.some((blog) => blog.title === 'this blog does not exist'),
+    )
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
