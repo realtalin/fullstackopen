@@ -17,17 +17,26 @@ describe('blogs api', () => {
     await Promise.all(promises)
   })
 
+  const url = '/api/blogs'
+
   test('blogs are returned as json', async () => {
     await api
-      .get('/api/blogs')
+      .get(url)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
   test('correct amount of blogs is returned', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api.get(url)
 
     assert.strictEqual(response.body.length, 6)
+  })
+
+  test('first blog id field is called id', async () => {
+    const response = await api.get(url)
+
+    assert(response.body[0].id)
+    assert(!response.body[0]._id)
   })
 
   after(async () => {
