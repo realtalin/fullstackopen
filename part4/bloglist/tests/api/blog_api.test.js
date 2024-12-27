@@ -86,6 +86,34 @@ describe('blogs api', () => {
     )
   })
 
+  test('adding blog with missing title fails', async () => {
+    const newBlogNoTitle = {
+      author: 'slonkazoid',
+      url: 'https://blog.slonk.ing/',
+      likes: 1000,
+    }
+
+    await api.post(url).send(newBlogNoTitle).expect(400)
+
+    const response = await api.get(url)
+
+    assert.strictEqual(response.body.length, blogs.length)
+  })
+
+  test('adding blog with missing url fails', async () => {
+    const newBlogNoUrl = {
+      title: 'bingus-blog',
+      author: 'slonkazoid',
+      likes: 1000,
+    }
+
+    await api.post(url).send(newBlogNoUrl).expect(400)
+
+    const response = await api.get(url)
+
+    assert.strictEqual(response.body.length, blogs.length)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
