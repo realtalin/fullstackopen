@@ -6,7 +6,7 @@ import {
   favouriteBlog,
   mostBlogs,
   mostLikes,
-} from '../utils/list_helper.js'
+} from '../../utils/list_helper.js'
 import { blogs } from './data.js'
 
 describe('dummy', () => {

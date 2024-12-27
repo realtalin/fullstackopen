@@ -3,10 +3,8 @@ import Blog from '../models/blog.js'
 
 const blogsRouter = Router()
 
-blogsRouter.get('/', (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs)
-  })
+blogsRouter.get('/', async (request, response) => {
+  response.json(await Blog.find({}))
 })
 
 blogsRouter.post('/', (request, response) => {
