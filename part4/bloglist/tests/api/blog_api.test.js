@@ -60,6 +60,32 @@ describe('blogs api', () => {
     )
   })
 
+  test('adding blog with no likes property defaults likes to 0', async () => {
+    const newBlogNoLikes = {
+      title: 'bingus-blog',
+      author: 'slonkazoid',
+      url: 'https://blog.slonk.ing/',
+    }
+
+    await api
+      .post(url)
+      .send(newBlogNoLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get(url)
+
+    assert(
+      response.body.some(
+        (blog) =>
+          blog.title === newBlogNoLikes.title &&
+          blog.author === newBlogNoLikes.author &&
+          blog.url === newBlogNoLikes.url &&
+          blog.likes === 0,
+      ),
+    )
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
