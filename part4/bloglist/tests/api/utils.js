@@ -1,4 +1,5 @@
 import Blog from '../../models/blog.js'
+import User from '../../models/user.js'
 
 const getAllBlogs = async () => {
   const blogs = await Blog.find({})
@@ -13,4 +14,9 @@ const nonexistentId = async () => {
   return tempBlog.id.toString()
 }
 
-export { getAllBlogs, nonexistentId }
+const getAllUsers = async () => {
+  const users = await User.find({})
+  return users.map((user) => user.toJSON())
+}
+
+export { getAllBlogs, nonexistentId, getAllUsers }
