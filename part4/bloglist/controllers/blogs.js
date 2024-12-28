@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import jsonwebtoken from 'jsonwebtoken'
 import Blog from '../models/blog.js'
 import User from '../models/user.js'
+import { userExtractor } from '../utils/middleware.js'
 
 const blogsRouter = Router()
 
@@ -9,14 +9,10 @@ blogsRouter.get('/', async (request, response) => {
   response.json(await Blog.find({}).populate('user', { username: 1, name: 1 }))
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
-  const userFromToken = jsonwebtoken.verify(request.token, process.env.SECRET)
-
-  if (!userFromToken.id) {
-    return response.status(401).json({ error: 'invalid token' })
-  }
+  const userFromToken = request.user
 
   const user = await User.findById(userFromToken.id)
 
@@ -35,12 +31,8 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const userFromToken = jsonwebtoken.verify(request.token, process.env.SECRET)
-
-  if (!userFromToken.id) {
-    return response.status(401).json({ error: 'invalid token' })
-  }
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+  const userFromToken = request.user
 
   const blog = await Blog.findById(request.params.id)
   const blogUserId = blog.user.toString()

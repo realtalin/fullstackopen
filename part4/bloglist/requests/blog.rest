@@ -4,10 +4,10 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlem9zMjAwMSIsImlkIjoiNjc3MDJmNzM0NDk1NmI4YjUzM2ExOWQzIiwiaWF0IjoxNzM1NDExODcwfQ.U0sItc_hE7GuWS-ELhUo7vphcF_6HwUwZOaAhy127uE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlem9zMjAwMSIsImlkIjoiNjc3MDJmNzM0NDk1NmI4YjUzM2ExOWQzIiwiaWF0IjoxNzM1NDEzNDc3fQ.O_E1TRJiIZAXR7JsWLVYKhK0ptnTHl0t3fpRmWTeIg0
 
 {   
-    "title": "awesome blog 5",
+    "title": "awesome blog 6",
     "author": "Jeff Bezos",
     "url": "http://www.myawesomeblog.com",
     "likes": 2
@@ -15,8 +15,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJle
 
 ###
 
-DELETE http://localhost:3003/api/blogs/67704b406852dc34607b1ebf
-Authorization: Bearer eyJhbGciOiybmFtZSI6ImJlem9zMjAwMSIsImlkIjoiNjc3MDJmNzM0NDk1NmI4YjUzM2ExOWQzIiwiaWF0IjoxNzM1NDExODcwfQ.U0sItc_hE7GuWS-ELhUo7vphcF_6HwUwZOaAhy127uE
+DELETE http://localhost:3003/api/blogs/67704f4397b3dd192d57012c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlem9zMjAwMSIsImlkIjoiNjc3MDJmNzM0NDk1NmI4YjUzM2ExOWQzIiwiaWF0IjoxNzM1NDEzNDc3fQ.O_E1TRJiIZAXR7JsWLVYKhK0ptnTHl0t3fpRmWTeIg0
 
 ###
 

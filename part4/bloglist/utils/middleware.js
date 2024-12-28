@@ -1,3 +1,5 @@
+import jsonwebtoken from 'jsonwebtoken'
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
@@ -26,4 +28,16 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
-export { errorHandler, tokenExtractor }
+const userExtractor = (request, response, next) => {
+  const userFromToken = jsonwebtoken.verify(request.token, process.env.SECRET)
+
+  if (!userFromToken.id) {
+    return response.status(401).json({ error: 'invalid token' })
+  }
+
+  request.user = userFromToken
+
+  next()
+}
+
+export { errorHandler, tokenExtractor, userExtractor }
