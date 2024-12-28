@@ -7,7 +7,7 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlem9zMjAwMSIsImlkIjoiNjc3MDJmNzM0NDk1NmI4YjUzM2ExOWQzIiwiaWF0IjoxNzM1NDExODcwfQ.U0sItc_hE7GuWS-ELhUo7vphcF_6HwUwZOaAhy127uE
 
 {   
-    "title": "awesome blog 3",
+    "title": "awesome blog 4",
     "author": "Jeff Bezos",
     "url": "http://www.myawesomeblog.com",
     "likes": 2

@@ -5,14 +5,6 @@ import User from '../models/user.js'
 
 const blogsRouter = Router()
 
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
-
 blogsRouter.get('/', async (request, response) => {
   response.json(await Blog.find({}).populate('user', { username: 1, name: 1 }))
 })
@@ -20,10 +12,7 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const userFromToken = jsonwebtoken.verify(
-    getTokenFrom(request),
-    process.env.SECRET,
-  )
+  const userFromToken = jsonwebtoken.verify(request.token, process.env.SECRET)
 
   if (!userFromToken.id) {
     return response.status(401).json({ error: 'invalid token' })
