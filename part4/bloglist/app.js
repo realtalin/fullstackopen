@@ -3,6 +3,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import 'express-async-errors'
 import { connect } from 'mongoose'
+import loginRouter from './controllers/login.js'
 import blogsRouter from './controllers/blogs.js'
 import usersRouter from './controllers/users.js'
 import { MONGODB_URI } from './utils/config.js'
@@ -23,6 +24,7 @@ app.use(
 app.use(cors())
 app.use(express.json())
 
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 
