@@ -15,3 +15,14 @@ content-type: application/json
 ###
 
 DELETE http://localhost:3003/api/blogs/676ee2da00f299bc9c0fec86
+
+###
+
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "bezos2001",
+    "name": "Jeff Bezoz",
+    "password":"amazonrainforest"
+}
