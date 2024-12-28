@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -10,6 +11,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
+  const [notification, setNotification] = useState({ text: null, error: null })
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -36,8 +38,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      console.error('login failed')
+      showNotification('Logged in!', false)
+    } catch (error) {
+      showNotification(error.response.data.error, true)
     }
   }
 
@@ -47,8 +50,16 @@ const App = () => {
     setUser(null)
   }
 
+  const showNotification = (text, error) => {
+    setNotification({ text: text, error: error })
+    setTimeout(() => {
+      setNotification({ text: null, error: null })
+    }, 5000)
+  }
+
   return (
     <div>
+      <Notification notification={notification} />
       {user === null ? (
         <LoginForm
           username={username}
@@ -63,7 +74,11 @@ const App = () => {
           <button type="button" onClick={handleLogout}>
             logout
           </button>
-          <BlogForm blogs={blogs} setBlogs={setBlogs} />
+          <BlogForm
+            blogs={blogs}
+            setBlogs={setBlogs}
+            showNotification={showNotification}
+          />
           <BlogList blogs={blogs} />
         </>
       )}
