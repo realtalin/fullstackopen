@@ -2,18 +2,82 @@ import { test, describe, beforeEach, after } from 'node:test'
 import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
+import bcrypt from 'bcrypt'
+import jsonwebtoken from 'jsonwebtoken'
 import app from '../../app.js'
 import Blog from '../../models/blog.js'
-import { blogs, newBlog } from './data.js'
+import User from '../../models/user.js'
 import { getAllBlogs, nonexistentId } from './utils.js'
 
 const api = supertest(app)
 
+const blogs = [
+  {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7,
+  },
+  {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+  },
+  {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12,
+  },
+  {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    likes: 10,
+  },
+  {
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 0,
+  },
+  {
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    likes: 2,
+  },
+]
+
+const newBlog = {
+  title: 'bingus-blog',
+  author: 'slonkazoid',
+  url: 'https://blog.slonk.ing/',
+  likes: 1000,
+}
+
 describe('blogs api', () => {
+  let token
+
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
 
-    const blogDocuments = blogs.map((blog) => new Blog(blog))
+    const passwordHash = await bcrypt.hash('hunter1', 10)
+    const user = new User({ username: 'test', passwordHash })
+    const createdUser = await user.save()
+
+    const userForToken = {
+      username: createdUser.username,
+      id: createdUser._id,
+    }
+
+    token = jsonwebtoken.sign(userForToken, process.env.SECRET)
+
+    const blogDocuments = blogs.map(
+      (blog) => new Blog({ ...blog, user: createdUser.id }),
+    )
     const promises = blogDocuments.map((blog) => blog.save())
     await Promise.all(promises)
   })
@@ -43,6 +107,7 @@ describe('blogs api', () => {
   test('blog is added to the database correctly', async () => {
     await api
       .post(url)
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -70,6 +135,7 @@ describe('blogs api', () => {
 
     await api
       .post(url)
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlogNoLikes)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -94,7 +160,11 @@ describe('blogs api', () => {
       likes: 1000,
     }
 
-    await api.post(url).send(newBlogNoTitle).expect(400)
+    await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlogNoTitle)
+      .expect(400)
 
     const blogsAfter = await getAllBlogs()
 
@@ -108,7 +178,11 @@ describe('blogs api', () => {
       likes: 1000,
     }
 
-    await api.post(url).send(newBlogNoUrl).expect(400)
+    await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlogNoUrl)
+      .expect(400)
 
     const blogsAfter = await getAllBlogs()
 
@@ -119,7 +193,10 @@ describe('blogs api', () => {
     const blogsBefore = await getAllBlogs()
     const blogToDelete = blogsBefore[0]
 
-    await api.delete(`${url}/${blogToDelete.id}`).expect(204)
+    await api
+      .delete(`${url}/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
 
     const blogsAfter = await getAllBlogs()
 
@@ -139,7 +216,10 @@ describe('blogs api', () => {
   test('deleting nonexistent blog fails with 404', async () => {
     const idToTryDelete = await nonexistentId()
 
-    await api.delete(`${url}/${idToTryDelete}`).expect(404)
+    await api
+      .delete(`${url}/${idToTryDelete}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404)
 
     const blogsAfter = await getAllBlogs()
 
@@ -160,7 +240,10 @@ describe('blogs api', () => {
 
     const blogAfter = (await Blog.findById(blogBefore.id)).toJSON()
 
-    assert.deepStrictEqual({ ...updatedBlog, id: blogBefore.id }, blogAfter)
+    assert.deepStrictEqual(
+      { ...updatedBlog, id: blogBefore.id, user: blogBefore.user },
+      blogAfter,
+    )
   })
 
   test('updating nonexistent blog fails with 404', async () => {

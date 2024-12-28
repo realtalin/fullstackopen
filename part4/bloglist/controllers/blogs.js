@@ -35,6 +35,10 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const userFromToken = request.user
 
   const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    response.status(404).json({ error: 'blog not found' })
+  }
+
   const blogUserId = blog.user.toString()
   const tokenUserId = userFromToken.id.toString()
 
