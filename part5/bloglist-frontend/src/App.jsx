@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import VisibilityToggle from './components/VisibilityToggle'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +13,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState({ text: null, error: null })
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -24,6 +27,22 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
+  const createBlog = async (blogObject) => {
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      showNotification(
+        `New blog added: ${returnedBlog.title} by ${returnedBlog.author}`,
+        false
+      )
+      blogFormRef.current.toggleVisibility()
+      return true
+    } catch (error) {
+      showNotification(error.response.data.error, true)
+      return false
+    }
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -74,11 +93,9 @@ const App = () => {
           <button type="button" onClick={handleLogout}>
             logout
           </button>
-          <BlogForm
-            blogs={blogs}
-            setBlogs={setBlogs}
-            showNotification={showNotification}
-          />
+          <VisibilityToggle buttonLabel="add blog" ref={blogFormRef}>
+            <BlogForm createBlog={createBlog} />
+          </VisibilityToggle>
           <BlogList blogs={blogs} />
         </>
       )}
