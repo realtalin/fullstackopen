@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -13,8 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState({ text: null, error: null })
-
-  const blogFormRef = useRef()
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -36,7 +35,7 @@ const App = () => {
         `New blog added: ${returnedBlog.title} by ${returnedBlog.author}`,
         false
       )
-      blogFormRef.current.toggleVisibility()
+      setBlogFormVisible(false)
       return true
     } catch (error) {
       showNotification(error.response.data.error, true)
@@ -93,7 +92,11 @@ const App = () => {
           <button type="button" onClick={handleLogout}>
             logout
           </button>
-          <VisibilityToggle buttonLabel="add blog" ref={blogFormRef}>
+          <VisibilityToggle
+            buttonLabel="add blog"
+            visible={blogFormVisible}
+            setVisible={setBlogFormVisible}
+          >
             <BlogForm createBlog={createBlog} />
           </VisibilityToggle>
           <BlogList blogs={blogs} />

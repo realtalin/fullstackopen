@@ -1,8 +1,4 @@
-import { useState, forwardRef, useImperativeHandle } from 'react'
-
-const VisibilityToggle = forwardRef((props, refs) => {
-  const [visible, setVisible] = useState(false)
-
+const VisibilityToggle = ({ children, buttonLabel, visible, setVisible }) => {
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -10,23 +6,17 @@ const VisibilityToggle = forwardRef((props, refs) => {
     setVisible(!visible)
   }
 
-  useImperativeHandle(refs, () => {
-    return {
-      toggleVisibility,
-    }
-  })
-
   return (
     <>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <button onClick={toggleVisibility}>{buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>
-        {props.children}
+        {children}
         <button onClick={toggleVisibility}>cancel</button>
       </div>
     </>
   )
-})
+}
 
 export default VisibilityToggle
