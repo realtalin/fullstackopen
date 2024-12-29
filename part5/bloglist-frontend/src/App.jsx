@@ -24,6 +24,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -47,6 +48,17 @@ const App = () => {
     try {
       const returnedBlog = await blogService.update(id, blogObject)
       setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)))
+    } catch (error) {
+      showNotification(error.response.data.error, true)
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      const response = await blogService.remove(id)
+      if (response.status === 204) {
+        setBlogs(blogs.filter((blog) => blog.id != id))
+      }
     } catch (error) {
       showNotification(error.response.data.error, true)
     }
@@ -108,7 +120,12 @@ const App = () => {
           >
             <BlogForm createBlog={createBlog} />
           </VisibilityToggle>
-          <BlogList blogs={blogs} updateBlog={updateBlog} />
+          <BlogList
+            blogs={blogs}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            loggedUserId={user.id}
+          />
         </>
       )}
     </div>

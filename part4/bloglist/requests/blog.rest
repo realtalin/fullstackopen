@@ -24,9 +24,9 @@ POST http://localhost:3003/api/users
 content-type: application/json
 
 {
-    "username": "bezos2001",
-    "name": "Jeff Bezoz",
-    "password":"amazonrainforest"
+    "username": "sampo",
+    "name": "S ja R",
+    "password":"123"
 }
 
 ###

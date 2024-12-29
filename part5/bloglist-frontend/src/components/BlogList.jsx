@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
+  const deleteVisible = blog.user.id === loggedUserId
+
   const divStyle = {
     paddingTop: 5,
     paddingBottom: 5,
@@ -29,13 +31,19 @@ const Blog = ({ blog, updateBlog }) => {
     await updateBlog(blog.id, blogObject)
   }
 
+  const handleDelete = async () => {
+    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
+      await deleteBlog(blog.id)
+    }
+  }
+
   return (
     <div>
       {detailsVisible ? (
         <div style={divStyle}>
           <ul style={listStyle}>
             <li>
-              {blog.title} {blog.author}
+              {blog.title} by {blog.author}
               <button onClick={toggleDetailsVisibility}>hide</button>
             </li>
             <li>
@@ -48,13 +56,18 @@ const Blog = ({ blog, updateBlog }) => {
             <li>
               <p>{blog.user.name}</p>
             </li>
+            {deleteVisible && (
+              <li>
+                <button onClick={handleDelete}>delete</button>
+              </li>
+            )}
           </ul>
         </div>
       ) : (
         <div style={divStyle}>
           <ul style={listStyle}>
             <li>
-              {blog.title} {blog.author}
+              {blog.title} by {blog.author}
               <button onClick={toggleDetailsVisibility}>show</button>
             </li>
           </ul>
@@ -64,14 +77,20 @@ const Blog = ({ blog, updateBlog }) => {
   )
 }
 
-const BlogList = ({ blogs, updateBlog }) => {
+const BlogList = ({ blogs, updateBlog, deleteBlog, loggedUserId }) => {
   return (
     <>
       <h2>blogs</h2>
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            loggedUserId={loggedUserId}
+          />
         ))}
     </>
   )
