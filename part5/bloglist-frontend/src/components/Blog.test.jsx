@@ -48,4 +48,15 @@ describe('<Blog / >', () => {
     screen.getByText(mockBlog.url)
     screen.getByText(mockBlog.likes)
   })
+
+  test('clicking like twice calls updateBlog twice', async () => {
+    const user = userEvent.setup()
+    const showButton = screen.getByText('show')
+    await user.click(showButton)
+    const likeButton = screen.getByText('like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockUpdateBlog.mock.calls).toHaveLength(2)
+  })
 })
