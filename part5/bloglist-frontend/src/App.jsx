@@ -57,7 +57,7 @@ const App = () => {
     try {
       const response = await blogService.remove(id)
       if (response.status === 204) {
-        setBlogs(blogs.filter((blog) => blog.id != id))
+        setBlogs(blogs.filter((blog) => blog.id !== id))
       }
     } catch (error) {
       showNotification(error.response.data.error, true)
