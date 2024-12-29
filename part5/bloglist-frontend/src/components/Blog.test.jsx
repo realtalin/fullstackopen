@@ -38,4 +38,14 @@ describe('<Blog / >', () => {
     expect(url).toBeNull()
     expect(likes).toBeNull()
   })
+
+  test('renders url and like after clicking `show` button', async () => {
+    const user = userEvent.setup()
+    const showButton = screen.getByText('show')
+    await user.click(showButton)
+
+    await screen.findByText(`${mockBlog.title} by ${mockBlog.author}`)
+    screen.getByText(mockBlog.url)
+    screen.getByText(mockBlog.likes)
+  })
 })
