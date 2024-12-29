@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const divStyle = {
     paddingTop: 5,
@@ -17,6 +17,18 @@ const Blog = ({ blog }) => {
     setDetailsVisible(!detailsVisible)
   }
 
+  const handleLike = async () => {
+    const blogObject = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    }
+
+    await updateBlog(blog.id, blogObject)
+  }
+
   return (
     <div>
       {detailsVisible ? (
@@ -31,7 +43,7 @@ const Blog = ({ blog }) => {
             </li>
             <li>
               {blog.likes}
-              <button>like</button>
+              <button onClick={handleLike}>like</button>
             </li>
             <li>
               <p>{blog.user.name}</p>
@@ -52,12 +64,12 @@ const Blog = ({ blog }) => {
   )
 }
 
-const BlogList = ({ blogs }) => {
+const BlogList = ({ blogs, updateBlog }) => {
   return (
     <>
       <h2>blogs</h2>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       ))}
     </>
   )

@@ -43,6 +43,15 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (id, blogObject) => {
+    try {
+      const returnedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)))
+    } catch (error) {
+      showNotification(error.response.data.error, true)
+    }
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -99,7 +108,7 @@ const App = () => {
           >
             <BlogForm createBlog={createBlog} />
           </VisibilityToggle>
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} updateBlog={updateBlog} />
         </>
       )}
     </div>
