@@ -46,7 +46,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
               <span>
                 {blog.title} by {blog.author}
               </span>
-              <button onClick={toggleDetailsVisibility}>hide</button>
+              <button name="hide" onClick={toggleDetailsVisibility}>
+                hide
+              </button>
             </li>
             <li>
               <p>{blog.url}</p>
@@ -60,7 +62,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
             </li>
             {deleteVisible && (
               <li>
-                <button onClick={handleDelete}>delete</button>
+                <button name="delete" onClick={handleDelete}>
+                  delete
+                </button>
               </li>
             )}
           </ul>
@@ -72,7 +76,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
               <span>
                 {blog.title} by {blog.author}
               </span>
-              <button onClick={toggleDetailsVisibility}>show</button>
+              <button name="show" onClick={toggleDetailsVisibility}>
+                show
+              </button>
             </li>
           </ul>
         </div>

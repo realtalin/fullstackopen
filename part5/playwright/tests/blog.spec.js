@@ -36,4 +36,16 @@ describe('blogs', () => {
     await expect(page.getByText('1')).toBeVisible()
     await expect(page.getByText('0')).not.toBeVisible()
   })
+
+  test('blog can be deleted', async ({ page }) => {
+    await createOneBlog(page)
+
+    await page.getByRole('button', { name: 'show' }).click()
+    page.on('dialog', (dialog) => dialog.accept())
+    await page.getByRole('button', { name: 'delete' }).click()
+
+    await expect(
+      page.locator('li').getByText('Korvatunturi by Joulupukki')
+    ).not.toBeVisible()
+  })
 })
