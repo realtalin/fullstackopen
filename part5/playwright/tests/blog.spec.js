@@ -1,10 +1,16 @@
 import { test, expect } from '@playwright/test'
 const { describe, beforeEach } = test
-import { resetDbToTestUser, testUser, login, createOneBlog } from './utils'
+import {
+  resetDbToTestUsers,
+  testUser1,
+  testUser2,
+  login,
+  createOneBlog,
+} from './utils'
 describe('blogs', () => {
   beforeEach(async ({ page, request }) => {
-    await resetDbToTestUser(request)
-    await login(page, 'test_fanatic123', 'hunter1')
+    await resetDbToTestUsers(request)
+    await login(page, testUser1.username, testUser1.password)
   })
 
   test('new blog can be created', async ({ page }) => {
@@ -21,7 +27,7 @@ describe('blogs', () => {
     await page.getByText('show').click()
 
     await expect(page.getByText('www.joulumaa.fi')).toBeVisible()
-    await expect(page.getByText(`${testUser.name}`)).toBeVisible()
+    await expect(page.getByText(`${testUser1.name}`)).toBeVisible()
   })
 
   test('blog can be liked', async ({ page }) => {
@@ -47,5 +53,15 @@ describe('blogs', () => {
     await expect(
       page.locator('li').getByText('Korvatunturi by Joulupukki')
     ).not.toBeVisible()
+  })
+
+  test('blog can`t be deleted by wrong user', async ({ page }) => {
+    await createOneBlog(page)
+
+    await page.getByRole('button', { name: 'logout' }).click()
+    await login(page, testUser2.username, testUser2.password)
+    await page.getByRole('button', { name: 'show' }).click()
+
+    expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
   })
 })

@@ -110,7 +110,7 @@ const App = () => {
       ) : (
         <>
           {user.name} logged in
-          <button type="button" onClick={handleLogout}>
+          <button type="button" name="logout" onClick={handleLogout}>
             logout
           </button>
           <VisibilityToggle
