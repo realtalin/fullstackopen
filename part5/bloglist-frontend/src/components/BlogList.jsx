@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const BlogList = ({ blogs, updateBlog, deleteBlog, loggedUserId }) => {
   return (
-    <>
+    <div data-testid="bloglist">
       <h2>blogs</h2>
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
@@ -16,7 +16,7 @@ const BlogList = ({ blogs, updateBlog, deleteBlog, loggedUserId }) => {
             loggedUserId={loggedUserId}
           />
         ))}
-    </>
+    </div>
   )
 }
 
