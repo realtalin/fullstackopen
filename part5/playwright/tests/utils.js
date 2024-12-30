@@ -24,4 +24,12 @@ const resetDbToTestUser = async (request) => {
   })
 }
 
-export { login, resetDbToTestUser, testUser }
+const createOneBlog = async (page) => {
+  await page.getByRole('button', { name: 'add blog' }).click()
+  await page.getByLabel('title').fill('Korvatunturi')
+  await page.getByLabel('author').fill('Joulupukki')
+  await page.getByLabel('url').fill('www.joulumaa.fi')
+  await page.getByRole('button', { name: 'create' }).click()
+}
+
+export { login, resetDbToTestUser, testUser, createOneBlog }

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 const { describe, beforeEach } = test
-import { resetDbToTestUser, testUser, login } from './utils'
+import { resetDbToTestUser, testUser, login, createOneBlog } from './utils'
 describe('blogs', () => {
   beforeEach(async ({ page, request }) => {
     await resetDbToTestUser(request)
@@ -22,5 +22,18 @@ describe('blogs', () => {
 
     await expect(page.getByText('www.joulumaa.fi')).toBeVisible()
     await expect(page.getByText(`${testUser.name}`)).toBeVisible()
+  })
+
+  test('blog can be liked', async ({ page }) => {
+    await createOneBlog(page)
+
+    await page.getByText('show').click()
+
+    await expect(page.getByText('0')).toBeVisible()
+
+    await page.getByText('like').click()
+
+    await expect(page.getByText('1')).toBeVisible()
+    await expect(page.getByText('0')).not.toBeVisible()
   })
 })
