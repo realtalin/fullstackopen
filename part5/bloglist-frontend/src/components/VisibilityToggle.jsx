@@ -9,11 +9,15 @@ const VisibilityToggle = ({ children, buttonLabel, visible, setVisible }) => {
   return (
     <>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button name={buttonLabel} onClick={toggleVisibility}>
+          {buttonLabel}
+        </button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <button name="cancel" onClick={toggleVisibility}>
+          cancel
+        </button>
       </div>
     </>
   )

@@ -6,6 +6,7 @@ import { connect } from 'mongoose'
 import loginRouter from './controllers/login.js'
 import blogsRouter from './controllers/blogs.js'
 import usersRouter from './controllers/users.js'
+import testRouter from './controllers/test.js'
 import { MONGODB_URI } from './utils/config.js'
 import { errorHandler, tokenExtractor } from './utils/middleware.js'
 
@@ -29,6 +30,10 @@ app.use(tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
+
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/test', testRouter)
+}
 
 app.use(errorHandler)
 

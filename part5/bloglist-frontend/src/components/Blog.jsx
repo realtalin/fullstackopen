@@ -43,7 +43,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
         <div style={divStyle}>
           <ul style={listStyle}>
             <li>
-              {blog.title} by {blog.author}
+              <span>
+                {blog.title} by {blog.author}
+              </span>
               <button onClick={toggleDetailsVisibility}>hide</button>
             </li>
             <li>
@@ -67,7 +69,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUserId }) => {
         <div style={divStyle}>
           <ul style={listStyle}>
             <li>
-              {blog.title} by {blog.author}
+              <span>
+                {blog.title} by {blog.author}
+              </span>
               <button onClick={toggleDetailsVisibility}>show</button>
             </li>
           </ul>
